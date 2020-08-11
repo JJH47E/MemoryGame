@@ -6,6 +6,7 @@
 *
 ********************************************************************************************/
 
+#include <stdio.h>
 #include <math.h>
 #include "raylib.h"
 
@@ -55,6 +56,8 @@ int main(void)
     
     Color usedColors[4] = { triangleColor, crossColor, squareColor, circleColor };
     
+    Sound click = LoadSound("resources/click.wav");
+    
     char debugText[50];
     sprintf(debugText, " ");
     
@@ -66,7 +69,8 @@ int main(void)
     bool newPress = false;
     bool takingInput = false;
     
-    bool inMenu = true;
+    bool splash = true;
+    bool inMenu = false;
     bool inGame = false;
     bool postGame = false;
     bool inGameOneTime = true;
@@ -77,6 +81,8 @@ int main(void)
     int currentPos = 0;
     int ansPos = 0;
     
+    bool oneTime = true;
+    
     char score[50];
     sprintf(score, "Score: %i", currentPos - 1);
     
@@ -85,6 +91,9 @@ int main(void)
     float rad = (float) 50;
     
     bool released = true;
+    
+    SetMasterVolume((float) 1);
+    SetSoundVolume(click, (float) 1);
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -107,24 +116,36 @@ int main(void)
                             // sprintf(debugText, "%i", i);
                             if (i == 0){
                                pressingTriangle = true;
+                               if(oneTime == true){
+                                   PlaySound(click);
+                               }
                             }
                             else{
                                 pressingTriangle = false;
                             }
                             if (i == 1){
                                 pressingCross = true;
+                                if(oneTime == true){
+                                   PlaySound(click);
+                               }
                             }
                             else{
                                 pressingCross = false;
                             }
                             if (i == 2){
                                 pressingSquare = true;
+                                if(oneTime == true){
+                                   PlaySound(click);
+                               }
                             }
                             else{
                                 pressingSquare = false;
                             }
                             if (i == 3){
                                 pressingCircle = true;
+                                if(oneTime == true){
+                                   PlaySound(click);
+                               }
                             }
                             else{
                                 pressingCircle = false;
@@ -133,6 +154,7 @@ int main(void)
                     }
                 }
                 if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)){
+                    oneTime = true;
                     newPress = true;
                     newPress = false;
                     //sprintf(debugText, "newPress");
@@ -208,6 +230,7 @@ int main(void)
                 inGame = true;
                 inMenu = false;
                 frameCounter = 0;
+                PlaySound(click);
             }
         }
         // ---------------------------------------------------------------------------------
@@ -314,6 +337,15 @@ int main(void)
                 DrawText("You Scored:", (screenWidth/2) - (MeasureText("You Scored:", 40)/2), screenHeight/2 - 50, 40, RAYWHITE);
                 DrawText(FormatText("%i", currentPos - 1), (screenWidth/2) - (MeasureText(FormatText("%i", currentPos), 60)/2), screenHeight/2, 40, YELLOW);
                 DrawText("Left Click to Return to the Menu", (screenWidth/2) - (MeasureText("Left Click to Return to the Menu", 20)/2), screenHeight * 9/10, 20, RAYWHITE);
+            }
+            else if (splash == true){
+                if(frameCounter < 180){
+                    DrawText("Created by JJH47E", (screenWidth/2) - (MeasureText("Created by JJH47E", 60)/2), screenHeight/2 - 30, 60, RAYWHITE);
+                }
+                else{
+                    inMenu = true;
+                    splash = false;
+                }
             }
             
             // -----------------------------------------------------------------------------
