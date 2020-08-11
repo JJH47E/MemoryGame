@@ -1,32 +1,8 @@
 /*******************************************************************************************
 *
-*   raylib [core] example - Basic window
+*   MemoryGame by JJH47E
 *
-*   Welcome to raylib!
-*
-*   To test examples in Notepad++, provided with default raylib installer package, 
-*   just press F6 and run [raylib_compile_execute] script, it will compile and execute.
-*   Note that compiled executable is placed in the same folder as .c file
-*
-*   You can find all basic examples on [C:\raylib\raylib\examples] directory and
-*   raylib official webpage: [www.raylib.com]
-*
-*   Enjoy using raylib. :)
-*
-*   This example has been created using raylib 1.0 (www.raylib.com)
-*   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
-*
-*   Copyright (c) 2013-2020 Ramon Santamaria (@raysan5)
-*
-********************************************************************************************/
-/*******************************************************************************************
-*
-*   raylib [core] example - Keyboard input
-*
-*   This example has been created using raylib 1.0 (www.raylib.com)
-*   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
-*
-*   Copyright (c) 2014 Ramon Santamaria (@raysan5)
+*   This game has been created using raylib 3.0 (www.raylib.com)
 *
 ********************************************************************************************/
 
@@ -90,10 +66,11 @@ int main(void)
     bool newPress = false;
     bool takingInput = false;
     
-    bool inMenu = false;
-    bool inGame = true;
+    bool inMenu = true;
+    bool inGame = false;
     bool postGame = false;
     bool inGameOneTime = true;
+    bool inMenuOneTime = true;
     
     bool addAns = false;
     int ans[75];
@@ -122,100 +99,115 @@ int main(void)
         sprintf(score, "Score: %i", currentPos - 1);
         // Inputs
         // ---------------------------------------------------------------------------------
-        if(takingInput == true){
-            if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
-                for (int i = 0; i < posLength; i++){
-                    if(calcDistance(GetMousePosition(), buttonPositions[i]) < rad){
-                        // sprintf(debugText, "%i", i);
-                        if (i == 0){
-                           pressingTriangle = true;
-                        }
-                        else{
-                            pressingTriangle = false;
-                        }
-                        if (i == 1){
-                            pressingCross = true;
-                        }
-                        else{
-                            pressingCross = false;
-                        }
-                        if (i == 2){
-                            pressingSquare = true;
-                        }
-                        else{
-                            pressingSquare = false;
-                        }
-                        if (i == 3){
-                            pressingCircle = true;
-                        }
-                        else{
-                            pressingCircle = false;
+        if(inGame == true){
+            if(takingInput == true){
+                if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
+                    for (int i = 0; i < posLength; i++){
+                        if(calcDistance(GetMousePosition(), buttonPositions[i]) < rad){
+                            // sprintf(debugText, "%i", i);
+                            if (i == 0){
+                               pressingTriangle = true;
+                            }
+                            else{
+                                pressingTriangle = false;
+                            }
+                            if (i == 1){
+                                pressingCross = true;
+                            }
+                            else{
+                                pressingCross = false;
+                            }
+                            if (i == 2){
+                                pressingSquare = true;
+                            }
+                            else{
+                                pressingSquare = false;
+                            }
+                            if (i == 3){
+                                pressingCircle = true;
+                            }
+                            else{
+                                pressingCircle = false;
+                            }
                         }
                     }
+                }
+                if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)){
+                    newPress = true;
+                    newPress = false;
+                    //sprintf(debugText, "newPress");
+                    // CHECK INPUTS
+                    if (pressingTriangle == true){
+                        if(ans[ansPos] != 0){
+                            // END GAME
+                            sprintf(debugText, "game over!");
+                            inGame = false;
+                            postGame = true;
+                        }
+                        else{
+                            ansPos++;
+                        }
+                    }
+                    else if (pressingCross == true){
+                        if(ans[ansPos] != 1){
+                            // END GAME
+                            sprintf(debugText, "game over!");
+                            inGame = false;
+                            postGame = true;
+                        }
+                        else{
+                            ansPos++;
+                        }
+                    }
+                    else if (pressingSquare == true){
+                        if(ans[ansPos] != 2){
+                            // END GAME
+                            sprintf(debugText, "game over!");
+                            inGame = false;
+                            postGame = true;
+                        }
+                        else{
+                            ansPos++;
+                        }
+                    }
+                    else if (pressingCircle == true){
+                        if(ans[ansPos] != 3){
+                            // END GAME
+                            sprintf(debugText, "game over!");
+                            inGame = false;
+                            postGame = true;
+                        }
+                        else{
+                            ansPos++;
+                        }
+                    }
+                    else{
+                        sprintf(debugText, "error");
+                    }
+                    if (ansPos == currentPos){
+                        ansPos = -1;
+                        addAns = true;
+                        takingInput = false;
+                        sprintf(debugText, "DONE");
+                    }
+                    pressingTriangle = false;
+                    pressingCross = false;
+                    pressingSquare = false;
+                    pressingCircle = false;
                 }
             }
-            if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)){
-                newPress = true;
-                newPress = false;
-                //sprintf(debugText, "newPress");
-                // CHECK INPUTS
-                if (pressingTriangle == true){
-                    if(ans[ansPos] != 0){
-                        // END GAME
-                        sprintf(debugText, "game over!");
-                        inGame = false;
-                        postGame = true;
-                    }
-                    else{
-                        ansPos++;
-                    }
-                }
-                else if (pressingCross == true){
-                    if(ans[ansPos] != 1){
-                        // END GAME
-                        sprintf(debugText, "game over!");
-                        inGame = false;
-                        postGame = true;
-                    }
-                    else{
-                        ansPos++;
-                    }
-                }
-                else if (pressingSquare == true){
-                    if(ans[ansPos] != 2){
-                        // END GAME
-                        sprintf(debugText, "game over!");
-                        inGame = false;
-                        postGame = true;
-                    }
-                    else{
-                        ansPos++;
-                    }
-                }
-                else if (pressingCircle == true){
-                    if(ans[ansPos] != 3){
-                        // END GAME
-                        sprintf(debugText, "game over!");
-                        inGame = false;
-                        postGame = true;
-                    }
-                    else{
-                        ansPos++;
-                    }
-                }
-                else{
-                    sprintf(debugText, "error");
-                }
-                if (ansPos == currentPos){
-                    ansPos = -1;
-                    addAns = true;
-                    takingInput = false;
-                    sprintf(debugText, "DONE");
-                }
-                pressingTriangle = false;
-                pressingCross = false;
-                pressingSquare = false;
-                pressingCircle = false;
+        }
+        else if(postGame == true){
+            if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+                inMenu = true;
+                postGame = false;
+            }
+        }
+        else if(inMenu == true){
+            if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+                inGame = true;
+                inMenu = false;
+                frameCounter = 0;
             }
         }
         // ---------------------------------------------------------------------------------
@@ -235,11 +227,23 @@ int main(void)
             // SCENE
             // -----------------------------------------------------------------------------
             if(inMenu == true){
+                if(inMenuOneTime == true){
+                    inMenuOneTime = false;
+                    addAns = false;
+                    currentPos = 0;
+                    inGameOneTime = true;
+                    ansPos = 0;
+                    ans[75];
+                }
                 // DRAW MENU
+                DrawText("MemoryGame", (screenWidth/2) - (MeasureText("MemoryGame", 60)/2), screenHeight/2 - 60, 60, RAYWHITE);
+                DrawText("Left Click to Begin", (screenWidth/2) - (MeasureText("Left Click to Begin", 20)/2), screenHeight * 9/10, 20, RAYWHITE);
             }
             else if(inGame == true){
                 if(inGameOneTime == true){
                     inGameOneTime = false;
+                    inMenuOneTime = true;
+                    takingInput = false;
                     addAns = true;
                     sprintf(debugText, "one time");
                 }
@@ -266,24 +270,30 @@ int main(void)
                 }
                 else{
                     // PLAYING ANS
-                    if(frameCounter < 120){
+                    if(frameCounter < 90){
                         if (frameCounter > 60){
                             // SHOW ANS BUTTON
-                            if (ans[ansPos] == 0){
-                                // SHOW TRIANGLE
-                                DrawCircleV(triangleButtonPosition, rad, clickTriangle);
+                            if(ansPos > currentPos){
+                                ansPos = 0;
+                                takingInput = true;
                             }
-                            else if (ans[ansPos] == 1){
-                                // SHOW CROSS
-                                DrawCircleV(crossButtonPosition, rad, clickCross);
-                            }
-                            else if (ans[ansPos] == 2){
-                                // SHOW SQUARE
-                                DrawCircleV(squareButtonPosition, rad, clickSquare);
-                            }
-                            else if (ans[ansPos] == 3){
-                                // SHOW CIRCLE
-                                DrawCircleV(circleButtonPosition, rad, clickCircle);
+                            else{
+                                if (ans[ansPos] == 0){
+                                    // SHOW TRIANGLE
+                                    DrawCircleV(triangleButtonPosition, rad, clickTriangle);
+                                }
+                                else if (ans[ansPos] == 1){
+                                    // SHOW CROSS
+                                    DrawCircleV(crossButtonPosition, rad, clickCross);
+                                }
+                                else if (ans[ansPos] == 2){
+                                    // SHOW SQUARE
+                                    DrawCircleV(squareButtonPosition, rad, clickSquare);
+                                }
+                                else if (ans[ansPos] == 3){
+                                    // SHOW CIRCLE
+                                    DrawCircleV(circleButtonPosition, rad, clickCircle);
+                                }
                             }
                         }
                     }
@@ -300,10 +310,10 @@ int main(void)
             }
             else if(postGame == true){
                 // DRAW POST GAME
-                DrawText("Game Over", (screenWidth/2) - (MeasureText("GameOver", 60)/2), screenHeight/2 - 120, 60, RAYWHITE);
+                DrawText("Game Over", (screenWidth/2) - (MeasureText("Game Over", 60)/2), screenHeight/2 - 120, 60, RAYWHITE);
                 DrawText("You Scored:", (screenWidth/2) - (MeasureText("You Scored:", 40)/2), screenHeight/2 - 50, 40, RAYWHITE);
                 DrawText(FormatText("%i", currentPos - 1), (screenWidth/2) - (MeasureText(FormatText("%i", currentPos), 60)/2), screenHeight/2, 40, YELLOW);
-                DrawText("Press Any Button to Return to the Menu", (screenWidth/2) - (MeasureText("Press Any Button to Return to the Menu", 20)/2), screenHeight * 9/10, 20, RAYWHITE);
+                DrawText("Left Click to Return to the Menu", (screenWidth/2) - (MeasureText("Left Click to Return to the Menu", 20)/2), screenHeight * 9/10, 20, RAYWHITE);
             }
             
             // -----------------------------------------------------------------------------
