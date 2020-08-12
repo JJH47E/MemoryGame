@@ -24,15 +24,15 @@
 .PHONY: all clean
 
 # Define required raylib variables
-PROJECT_NAME       ?= MemoryGame
+PROJECT_NAME       ?= simple_game
 RAYLIB_VERSION     ?= 3.0.0
 RAYLIB_API_VERSION ?= 3
-RAYLIB_PATH        ?= C:\raylib\raylib
+RAYLIB_PATH        ?= ../..
 
 # Define default options
 
 # One of PLATFORM_DESKTOP, PLATFORM_RPI, PLATFORM_ANDROID, PLATFORM_WEB
-PLATFORM           ?= PLATFORM_WEB
+PLATFORM           ?= PLATFORM_DESKTOP
 
 # Locations of your newly installed library and associated headers. See ../src/Makefile
 # On Linux, if you have installed raylib but cannot compile the examples, check that
@@ -115,7 +115,7 @@ endif
 
 ifeq ($(PLATFORM),PLATFORM_WEB)
     # Emscripten required variables
-    EMSDK_PATH         ?= C:/build/emsdk-master
+    EMSDK_PATH         ?= C:/emsdk
     EMSCRIPTEN_PATH    ?= $(EMSDK_PATH)/fastcomp/emscripten
     CLANG_PATH          = $(EMSDK_PATH)/fastcomp/bin
     PYTHON_PATH         = $(EMSDK_PATH)/python/2.7.13.1_64bit/python-2.7.13.amd64
@@ -353,7 +353,7 @@ ifeq ($(PLATFORM),PLATFORM_WEB)
 endif
 
 # Define all source files required
-PROJECT_SOURCE_FILES ?= C:\cgame\memoryGame\HTML\main.c
+PROJECT_SOURCE_FILES ?= simple_game.c
 
 # Define all object files from source files
 OBJS = $(patsubst %.c, %.o, $(PROJECT_SOURCE_FILES))
