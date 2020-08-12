@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <emscripten/emscripten.h>
 #include "raylib.h"
 
 float calcDistance(Vector2 mouse, Vector2 button){
@@ -40,23 +41,14 @@ int main(void)
     Color clickSquare = (Color){ 144, 95, 146, 255 };
     Color clickCircle = (Color){ 186, 96, 120, 255 };
     
-    Color clickedColors[4] = { clickTriangle, clickCross, clickSquare, clickCircle };
+    //FADE COLORS
+    Color triangleColor = Fade(clickTriangle, 0.4);
+    Color crossColor = Fade(clickCross, 0.4);
+    Color squareColor = Fade(clickSquare, 0.4);
+    Color circleColor = Fade(clickCircle, 0.4);
     
-    //UNCLICKED COLORS
-    Color fadeTriangle = Fade(clickTriangle, 0.4);
-    Color fadeCross = Fade(clickCross, 0.4);
-    Color fadeSquare = Fade(clickSquare, 0.4);
-    Color fadeCircle = Fade(clickCircle, 0.4);
-    
-    //USED COLORS
-    Color triangleColor = fadeTriangle;
-    Color crossColor = fadeCross;
-    Color squareColor = fadeSquare;
-    Color circleColor = fadeCircle;
-    
-    Color usedColors[4] = { triangleColor, crossColor, squareColor, circleColor };
-    
-    Sound click = LoadSound("resources/click.wav");
+    Sound fxClick = LoadSound("resources/click.wav");
+    Texture2D logo = LoadTexture("resources/logo.png");
     
     char debugText[50];
     sprintf(debugText, " ");
@@ -66,7 +58,6 @@ int main(void)
     bool pressingSquare = false;
     bool pressingCircle = false;
     
-    bool newPress = false;
     bool takingInput = false;
     
     bool splash = true;
@@ -90,10 +81,10 @@ int main(void)
     
     float rad = (float) 50;
     
-    bool released = true;
+    InitAudioDevice();
     
     SetMasterVolume((float) 1);
-    SetSoundVolume(click, (float) 1);
+    SetSoundVolume(fxClick, (float) 1);
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -104,7 +95,6 @@ int main(void)
         // Update
         //----------------------------------------------------------------------------------
         frameCounter++;
-        released = false;
         sprintf(score, "Score: %i", currentPos - 1);
         // Inputs
         // ---------------------------------------------------------------------------------
@@ -117,7 +107,7 @@ int main(void)
                             if (i == 0){
                                pressingTriangle = true;
                                if(oneTime == true){
-                                   PlaySound(click);
+                                   PlaySound(fxClick);
                                }
                             }
                             else{
@@ -126,7 +116,7 @@ int main(void)
                             if (i == 1){
                                 pressingCross = true;
                                 if(oneTime == true){
-                                   PlaySound(click);
+                                   PlaySound(fxClick);
                                }
                             }
                             else{
@@ -135,7 +125,7 @@ int main(void)
                             if (i == 2){
                                 pressingSquare = true;
                                 if(oneTime == true){
-                                   PlaySound(click);
+                                   PlaySound(fxClick);
                                }
                             }
                             else{
@@ -144,7 +134,7 @@ int main(void)
                             if (i == 3){
                                 pressingCircle = true;
                                 if(oneTime == true){
-                                   PlaySound(click);
+                                   PlaySound(fxClick);
                                }
                             }
                             else{
@@ -155,8 +145,6 @@ int main(void)
                 }
                 if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)){
                     oneTime = true;
-                    newPress = true;
-                    newPress = false;
                     //sprintf(debugText, "newPress");
                     // CHECK INPUTS
                     if (pressingTriangle == true){
@@ -230,7 +218,7 @@ int main(void)
                 inGame = true;
                 inMenu = false;
                 frameCounter = 0;
-                PlaySound(click);
+                PlaySound(fxClick);
             }
         }
         // ---------------------------------------------------------------------------------
@@ -256,7 +244,6 @@ int main(void)
                     currentPos = 0;
                     inGameOneTime = true;
                     ansPos = 0;
-                    ans[75];
                 }
                 // DRAW MENU
                 DrawText("MemoryGame", (screenWidth/2) - (MeasureText("MemoryGame", 60)/2), screenHeight/2 - 60, 60, RAYWHITE);
@@ -340,7 +327,8 @@ int main(void)
             }
             else if (splash == true){
                 if(frameCounter < 180){
-                    DrawText("Created by JJH47E", (screenWidth/2) - (MeasureText("Created by JJH47E", 60)/2), screenHeight/2 - 30, 60, RAYWHITE);
+                    DrawTexture(logo, screenWidth/2 - 54, screenHeight/2 - 54 - 40, Fade(RAYWHITE, 0.8));
+                    DrawText("Created by JJH47E", (screenWidth/2) - (MeasureText("Created by JJH47E", 60)/2), screenHeight/2 + 40, 60, Fade(RAYWHITE, 0.8));
                 }
                 else{
                     inMenu = true;
@@ -356,6 +344,9 @@ int main(void)
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    UnloadSound(fxClick);
+    UnloadTexture(logo);
+    CloseAudioDevice();
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
