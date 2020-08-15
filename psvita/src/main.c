@@ -2,7 +2,7 @@
 *
 *   MemoryGame by JJH47E
 *
-*   This game has been created using raylib 3.0 (www.raylib.com)
+*   This game has been created using VitaSDK (https://vitasdk.org)
 *
 ********************************************************************************************/
 
