@@ -10,4 +10,4 @@ Follow install instructions for [VitaSDK](https://vitasdk.org/).
 1. cd into /psvita
 2. Run `cmake .&& make`
 
-More platoforms soon.
+More platoforms soon
