@@ -304,7 +304,7 @@ int main(void)
             }
             else if(postGame == true){
                 // DRAW POST GAME
-                vita2d_font_draw_text(font, screenWidth/2 - 76, screenHeight/2 - 40, RGBA8(255, 255, 255, 255), 28, "GameOver");
+                vita2d_font_draw_text(font, screenWidth/2 - 76, screenHeight/2 - 40, RGBA8(255, 255, 255, 255), 28, "Game Over");
                 vita2d_font_draw_text(font, screenWidth/2 - 84, screenHeight/2, RGBA8(255, 255, 255, 255), 28, "You Scored:");
                 sprintf(score, "%i", currentPos - 1);
                 vita2d_font_draw_text(font, screenWidth/2 - 8.5, screenHeight/2 + 40, RGBA8(255, 216, 0, 255), 28, score);
