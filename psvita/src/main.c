@@ -27,9 +27,9 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     SceCtrlData pad;
-    vita2d_pgf *pgf;
-    vita2d_pvf *pvf;
     vita2d_texture *image;
+    vita2d_texture *logo;
+    vita2d_font *font;
 
     const int screenWidth = 960;
     const int screenHeight = 544;
@@ -37,10 +37,10 @@ int main(void)
     vita2d_init();
     vita2d_set_clear_color(RGBA8(0, 0, 0, 255));
 
-    pgf = vita2d_load_default_pgf();
-    pvf = vita2d_load_default_pvf();
+    font = vita2d_load_font_file("app0:src/resources/font.otf");
 
-    image = vita2d_load_PNG_buffer(&_binary_image_png_start);
+    image = vita2d_load_PNG_file("app0:src/resources/image.png");
+    logo = vita2d_load_PNG_file("app0:src/resources/logo.png");
 
     memset(&pad, 0, sizeof(pad));
 
@@ -71,7 +71,6 @@ int main(void)
     int ansPos = 0;
     int rngInt = 0;
     bool noButtons = true;
-    bool oneTimeBool = true;
     bool fromPostGame = true;
     int rngCounter = 0;
     
@@ -96,6 +95,10 @@ int main(void)
         frameCounter++;
         rngCounter++;
         sprintf(score, "Score: %i", currentPos - 1);
+        if(currentPos >= 70){
+        	inGame = false;
+        	postGame = true;
+        }
         // Inputs
         // ---------------------------------------------------------------------------------
         if(inGame == true){
@@ -123,7 +126,6 @@ int main(void)
                 }
                 if((noButtons == true) && (pressingCross == true || pressingCircle == true || pressingTriangle == true || pressingSquare == true)){//WHEN BUTTON IS RELEASED
                     //first push bool = true
-                    oneTimeBool = false;
                     if (pressingTriangle == true){
                         if(ans[ansPos] != 0){
                             // END GAME
@@ -172,7 +174,6 @@ int main(void)
                         ansPos = -1;
                         addAns = true;
                         takingInput = false;
-                        oneTimeBool = true;
                     }
                     pressingTriangle = false;
                     pressingCross = false;
@@ -194,7 +195,6 @@ int main(void)
                     inGame = true;
                     inMenu = false;
                     frameCounter = 0;
-                    oneTimeBool = true;
                 }
             }
             else{
@@ -227,8 +227,12 @@ int main(void)
                     ansPos = 0;
                 }
                 // DRAW MENU
-                vita2d_pvf_draw_text(pvf, screenWidth/2, screenHeight/2, RGBA8(255, 255, 255, 255), 1.0f, "MemoryGame");
-                vita2d_pvf_draw_text(pvf, screenWidth/2, screenHeight - 25, RGBA8(255, 255, 255, 255), 1.0f, "Press X to play");
+                vita2d_draw_fill_circle(triangleButtonPosition.x, triangleButtonPosition.y, rad, RGBA8( 0, 181, 127, 102 ));
+                vita2d_draw_fill_circle(crossButtonPosition.x, crossButtonPosition.y, rad, RGBA8( 110, 123, 225, 102 ));
+                vita2d_draw_fill_circle(squareButtonPosition.x, squareButtonPosition.y, rad, RGBA8( 144, 95, 146, 102 ));
+                vita2d_draw_fill_circle(circleButtonPosition.x, circleButtonPosition.y, rad, RGBA8( 186, 96, 120, 102 ));
+                vita2d_draw_texture(logo, screenWidth/2 - 231.5,  70);
+                vita2d_font_draw_text(font, screenWidth/2 - 75, screenHeight - 25, RGBA8(255, 255, 255, 255), 20, "Press X to play");
             }
             else if(inGame == true){
                 if(inGameOneTime == true){
@@ -238,7 +242,7 @@ int main(void)
                     addAns = true;
                 }
                 // DRAW IN GAME
-                vita2d_pgf_draw_text(pgf, 10, 20, RGBA8(255, 255, 255, 255), 1.0f, score);//FormatText() if this fails the build
+                vita2d_font_draw_text(font, 10, 20, RGBA8(255, 255, 255, 255), 20, score);//FormatText() if this fails the build
                 vita2d_draw_fill_circle(triangleButtonPosition.x, triangleButtonPosition.y, rad, RGBA8( 0, 181, 127, 102 ));
                 vita2d_draw_fill_circle(crossButtonPosition.x, crossButtonPosition.y, rad, RGBA8( 110, 123, 225, 102 ));
                 vita2d_draw_fill_circle(squareButtonPosition.x, squareButtonPosition.y, rad, RGBA8( 144, 95, 146, 102 ));
@@ -293,7 +297,6 @@ int main(void)
                         if(ansPos == currentPos){
                             ansPos = 0;
                             takingInput = true;
-                            oneTimeBool = true;
                         }
                     }
                 }
@@ -301,16 +304,16 @@ int main(void)
             }
             else if(postGame == true){
                 // DRAW POST GAME
-                vita2d_pvf_draw_text(pvf, screenWidth/2, screenHeight/2, RGBA8(255, 255, 255, 255), 3.0f, "GameOver");
-                vita2d_pvf_draw_text(pvf, screenWidth/2, screenHeight/2 + 30, RGBA8(255, 255, 255, 255), 3.0f, "You Scored:");
+                vita2d_font_draw_text(font, screenWidth/2 - 76, screenHeight/2 - 40, RGBA8(255, 255, 255, 255), 28, "GameOver");
+                vita2d_font_draw_text(font, screenWidth/2 - 84, screenHeight/2, RGBA8(255, 255, 255, 255), 28, "You Scored:");
                 sprintf(score, "%i", currentPos - 1);
-                vita2d_pvf_draw_text(pvf, screenWidth/2, screenHeight/2 + 60, RGBA8(255, 216, 0, 255), 3.0f, score);
-                vita2d_pvf_draw_text(pvf, screenWidth/2, screenHeight - 25, RGBA8(255, 255, 255, 255), 1.0f, "Press X to return to the menu");
+                vita2d_font_draw_text(font, screenWidth/2 - 8.5, screenHeight/2 + 40, RGBA8(255, 216, 0, 255), 28, score);
+                vita2d_font_draw_text(font, screenWidth/2 - 144, screenHeight - 25, RGBA8(255, 255, 255, 255), 20, "Press X to return to the menu");
             }
             else if (splash == true){
                 if(frameCounter < 180){
-                    vita2d_draw_texture_rotate(image, screenWidth/2, screenHeight/2, 0);
-                    vita2d_pvf_draw_text(pvf, screenWidth/2, screenHeight - 25, RGBA8(255, 255, 255, 255), 1.0f, "Made by JJH47E");
+                    vita2d_draw_texture(image, screenWidth/2 - 56,  screenHeight/2 - 54);
+                    vita2d_font_draw_text(font, screenWidth/2 - 83, screenHeight - 25, RGBA8(255, 255, 255, 255), 20, "Made by JJH47E");
                 }
                 else{
                     inMenu = true;
@@ -330,8 +333,8 @@ int main(void)
     //--------------------------------------------------------------------------------------
     vita2d_fini();
     vita2d_free_texture(image);
-    vita2d_free_pgf(pgf);
-    vita2d_free_pvf(pvf);
+    vita2d_free_texture(logo);
+    vita2d_free_font(font);
     //--------------------------------------------------------------------------------------
     sceKernelExitProcess(0);
     return 0;
